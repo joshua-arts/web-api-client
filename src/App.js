@@ -12,18 +12,17 @@ function App() {
   const [response, setResponse] = useState();
   const [status, setStatus] = useState({});
 
-  const makeRequest = (endpoint, requestType, headers, body) => {
+  const makeRequest = (endpoint, action, headers, body) => {
     // Add default headers.
     headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
     // Use axios to make the request.
     axios({
-      method: requestType,
+      method: action,
       url: endpoint,
       headers: headers,
       data: body
     }).then(response => {
-      console.log(response);
       setResponse(response.data);
       setStatus({ code: response.status, text: response.statusText });
     }).catch(err => {

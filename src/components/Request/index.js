@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   makeStyles,
   Button,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -21,7 +22,8 @@ const useStyles = makeStyles(theme => ({
 function Request(props) {
   const classes = useStyles();
 
-  const [requestType, setRequestType] = useState('get');
+  const [requestType, setRequestType] = useState('rest');
+  const [action, setAction] = useState('get');
   const [endpoint, setEndpoint] = useState('https://api.github.com');
   const [headers, setHeaders] = useState([{ key: '', value: '' }]);
   const [params, setParams] = useState([{ key: '', value: '' }]);
@@ -34,8 +36,8 @@ function Request(props) {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
 
-  const updateRequestType = () => e => {
-    setRequestType(e.target.value);
+  const updateAction = () => e => {
+    setAction(e.target.value);
   };
 
   const updateEndpoint = () => e => {
@@ -77,21 +79,53 @@ function Request(props) {
   const makeRequest = () => {
     let requestUrl = endpoint + serializeUrlParams(params);
 
-    props.onSend(requestUrl, requestType, formatHeaders(headers), requestBody);
+    props.onSend(requestUrl, action, formatHeaders(headers), requestBody);
   };
+
+  const requestTypeButtonStyle = (buttonType) => {
+    if (buttonType == requestType) {
+      return 'contained';
+    } else {
+      return 'outlined';
+    }
+  }
+
+  const setRestMode = () => {
+    setRequestType('rest');
+    setAction('get');
+    setEndpoint('https://api.github.com');
+  }
+
+  const setGraphQLMode = () => {
+    setRequestType('graphql');
+    setAction('post');
+    setEndpoint('https://api.github.com/graphql');
+  }
 
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
+        <Grid container item xs={6} alignItems="center" justify="center">
+          <Button onClick={() => setRestMode()} style={{width: '80%'}} variant={requestTypeButtonStyle('rest')} size="large" color="primary" className={classes.margin}>
+            REST
+          </Button>
+        </Grid>
+        <Grid container item xs={6} alignItems="center" justify="center">
+          <Button onClick={() => setGraphQLMode()} style={{ width: '80%' }} variant={requestTypeButtonStyle('graphql')} size="large" color="primary" className={classes.margin}>
+            GraphQL
+          </Button>
+        </Grid>
+        <Divider />
         <Grid container item xs={2} alignItems="flex-end" justify="flex-end">
           <FormControl fullWidth variant="outlined" className={classes.formControl}>
             <InputLabel ref={inputLabel} htmlFor="outlined-age-native-simple">
               Action
             </InputLabel>
             <Select
+              disabled={ requestType == 'graphql' ? true : false }
               native
-              value={requestType}
-              onChange={updateRequestType()}
+              value={action}
+              onChange={updateAction()}
               labelWidth={labelWidth}
             >
               <option value={'get'}>GET</option>
@@ -101,6 +135,7 @@ function Request(props) {
         </Grid>
         <Grid item xs={8}>
           <TextField
+            disabled={requestType == 'graphql' ? true : false}
             onChange={updateEndpoint()}
             value={endpoint + serializeUrlParams(params)}
             fullWidth
@@ -123,7 +158,7 @@ function Request(props) {
         <Grid container item alignItems="flex-end" justify="flex-end" xs={6}>
           <Params params={params} setParams={setParams} />
         </Grid>
-        { requestType == 'post' &&
+        { action == 'post' && requestType == 'rest' &&
           <Body requestBody={requestBody} setRequestBody={setRequestBody} />
         }
       </Grid>
