@@ -30,10 +30,10 @@ function Params(props) {
       <div key={`param-${i}`} class={classes.paramInput}>
         <Grid container spacing={2}>
           <Grid container item xs={4}>
-            <TextField onChange={updateParam(i, 'key')} value={param.key} id="outlined-basic" label="Key" variant="outlined" size="small" fullWidth />
+            <TextField disabled={props.disabled} onChange={updateParam(i, 'key')} value={param.key} id="outlined-basic" label="Key" variant="outlined" size="small" fullWidth />
           </Grid>
           <Grid container item xs={8}>
-            <TextField onChange={updateParam(i, 'value')} value={param.value} id="outlined-basic" label="Value" variant="outlined" size="small" fullWidth />
+            <TextField disabled={props.disabled} onChange={updateParam(i, 'value')} value={param.value} id="outlined-basic" label="Value" variant="outlined" size="small" fullWidth />
           </Grid>
         </Grid>
       </div>
@@ -47,7 +47,7 @@ function Params(props) {
           <h3>Parameters</h3>
         </Grid>
         <Grid container item xs={1} spacing={2} alignItems="center" justify="center">
-          <Button onClick={newParam} fullWidth size="small" variant="contained" color="primary">
+          <Button disabled={props.disabled} onClick={newParam} fullWidth size="small" variant="contained" color="primary">
             Add
           </Button>
         </Grid>

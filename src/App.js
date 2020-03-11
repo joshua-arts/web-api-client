@@ -17,6 +17,7 @@ function App() {
     headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
     // Use axios to make the request.
+    console.log(body);
     axios({
       method: action,
       url: endpoint,

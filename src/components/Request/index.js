@@ -14,6 +14,7 @@ import {
 import Headers from './components/Headers';
 import Params from './components/Params';
 import Body from './components/Body';
+import GraphQuery from './components/GraphQuery';
 
 const useStyles = makeStyles(theme => ({
   root: { flexGrow: 1, marginTop: '40px' },
@@ -28,6 +29,7 @@ function Request(props) {
   const [headers, setHeaders] = useState([{ key: '', value: '' }]);
   const [params, setParams] = useState([{ key: '', value: '' }]);
   const [requestBody, setRequestBody] = useState({ key: 'value' });
+  const [graphQuery, setGraphQuery] = useState('');
 
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = useState(0);
@@ -48,6 +50,14 @@ function Request(props) {
     }
 
     setEndpoint(endpoint);
+  }
+
+  const buildEndpoint = () => {
+    if (requestType == 'rest') {
+      return endpoint + serializeUrlParams(params);
+    } else {
+      return endpoint;
+    }
   }
 
   const serializeUrlParams = () => {
@@ -79,7 +89,13 @@ function Request(props) {
   const makeRequest = () => {
     let requestUrl = endpoint + serializeUrlParams(params);
 
-    props.onSend(requestUrl, action, formatHeaders(headers), requestBody);
+    // Format the body based on requst type.
+    let body = requestBody;
+    if (requestType == 'graphql') {
+      body = { query: graphQuery }
+    }
+
+    props.onSend(requestUrl, action, formatHeaders(headers), body);
   };
 
   const requestTypeButtonStyle = (buttonType) => {
@@ -137,7 +153,7 @@ function Request(props) {
           <TextField
             disabled={requestType == 'graphql' ? true : false}
             onChange={updateEndpoint()}
-            value={endpoint + serializeUrlParams(params)}
+            value={buildEndpoint()}
             fullWidth
             id="outlined-basic"
             label="Request Endpoint"
@@ -156,10 +172,13 @@ function Request(props) {
           <Headers headers={headers} setHeaders={setHeaders} />
         </Grid>
         <Grid container item alignItems="flex-end" justify="flex-end" xs={6}>
-          <Params params={params} setParams={setParams} />
+          <Params params={params} setParams={setParams} disabled={requestType == 'graphql'} />
         </Grid>
         { action == 'post' && requestType == 'rest' &&
           <Body requestBody={requestBody} setRequestBody={setRequestBody} />
+        }
+        {requestType == 'graphql' &&
+          <GraphQuery graphQuery={graphQuery} setGraphQuery={setGraphQuery} />
         }
       </Grid>
       <br />
