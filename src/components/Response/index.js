@@ -36,7 +36,7 @@ function Response(props) {
       <div class={classes.root}>
         <Grid container spacing={3}>
           <Grid container item xs={10}>
-            <ReactJson src={props.response} collapsed={1} />
+            <ReactJson src={props.response} collapsed={3} />
           </Grid>
           <Grid container item xs={2} justify="center">
             <h2 class={statusClass}>{props.status.code}</h2>

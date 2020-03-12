@@ -1,56 +1,45 @@
 import React from "react";
 
-import { makeStyles, Grid, TextField } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
-import JSONInput from 'react-json-editor-ajrm';
-import locale from 'react-json-editor-ajrm/locale/en';
+import Editor from 'react-simple-code-editor';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-graphql';
+import 'prismjs/components/prism-json';
+import 'prismjs/themes/prism-coy.css';
 
-
-const useStyles = makeStyles(theme => ({
-  shortWidth: { width: '95%' }
-}));
-
-const jsonInputStyle = {
-  outerBox: {
-    border: '1px solid lightgrey',
-    borderRadius: '2px'
-  }
+const editorStyle = {
+  fontFamily: '"Fira code", "Fira Mono", monospace',
+  fontSize: 12,
+  width: '100%',
+  height: '80%',
+  border: '1px solid lightgrey',
+  borderRadius: '2px',
+  margin: '6px',
+  paddingBottom: '80px'
 }
 
 function GraphQuery(props) {
-  const classes = useStyles();
-
-  // TODO: Add some sort of formatting here...
-  const updateGraphQuery = (event) => {
-    props.setGraphQuery(event.target.value);
-  }
-
   return (
     <Grid container item xs={12}>
       <Grid container item xs={6}>
         <h3>Query</h3>
-        <TextField
-          id="graphQuery"
-          multiline
-          rows={10}
+        <Editor
           value={props.graphQuery}
-          variant="outlined"
-          onChange={updateGraphQuery}
-          fullWidth
-          class={classes.shortWidth}
+          onValueChange={ code => props.setGraphQuery(code) }
+          highlight={code => highlight(code, languages.graphql)}
+          padding={10}
+          style={editorStyle}
         />
       </Grid>
-      <Grid container item xs={6} alignItems="flex-end" justify="flex-end" >
+      <Grid container item xs={6}>
         <h3>Query Variables</h3>
-        <JSONInput
-          id='requestBody'
-          placeholder={props.requestBody}
-          theme='light_mitsuketa_tribute'
-          locale={locale}
-          height='200px'
-          width='95%'
-          style={jsonInputStyle}
-          // onChange={updateRequestBody}
+        <Editor
+          value={props.graphVariables}
+          onValueChange={code => props.setGraphVariables(code)}
+          highlight={code => highlight(code, languages.json)}
+          padding={10}
+          style={editorStyle}
         />
       </Grid>
     </Grid>

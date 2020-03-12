@@ -48,7 +48,7 @@ function Headers(props) {
         </Grid>
         <Grid container item xs={1} spacing={2} alignItems="center" justify="center">
           <Button onClick={newHeader} fullWidth size="small" variant="contained" color="primary">
-            Add
+            New
           </Button>
         </Grid>
       </Grid>

@@ -20,6 +20,21 @@ const useStyles = makeStyles(theme => ({
   root: { flexGrow: 1, marginTop: '40px' },
 }));
 
+const sampleQuery = `query($number_of_repos: Int!){
+  viewer {
+    name
+     repositories(last: $number_of_repos) {
+       nodes {
+         name
+       }
+     }
+   }
+}`
+
+const sampleVariables = `{
+  "number_of_repos": 3
+}`
+
 function Request(props) {
   const classes = useStyles();
 
@@ -29,7 +44,8 @@ function Request(props) {
   const [headers, setHeaders] = useState([{ key: '', value: '' }]);
   const [params, setParams] = useState([{ key: '', value: '' }]);
   const [requestBody, setRequestBody] = useState({ key: 'value' });
-  const [graphQuery, setGraphQuery] = useState('');
+  const [graphQuery, setGraphQuery] = useState(sampleQuery);
+  const [graphVariables, setGraphVariables] = useState(sampleVariables);
 
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = useState(0);
@@ -92,7 +108,7 @@ function Request(props) {
     // Format the body based on requst type.
     let body = requestBody;
     if (requestType == 'graphql') {
-      body = { query: graphQuery }
+      body = { query: graphQuery, variables: JSON.parse(graphVariables) }
     }
 
     props.onSend(requestUrl, action, formatHeaders(headers), body);
@@ -151,7 +167,6 @@ function Request(props) {
         </Grid>
         <Grid item xs={8}>
           <TextField
-            disabled={requestType == 'graphql' ? true : false}
             onChange={updateEndpoint()}
             value={buildEndpoint()}
             fullWidth
@@ -178,7 +193,11 @@ function Request(props) {
           <Body requestBody={requestBody} setRequestBody={setRequestBody} />
         }
         {requestType == 'graphql' &&
-          <GraphQuery graphQuery={graphQuery} setGraphQuery={setGraphQuery} />
+          <GraphQuery
+            graphQuery={graphQuery}
+            setGraphQuery={setGraphQuery}
+            graphVariables={graphVariables}
+            setGraphVariables={setGraphVariables} />
         }
       </Grid>
       <br />

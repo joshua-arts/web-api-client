@@ -48,7 +48,7 @@ function Params(props) {
         </Grid>
         <Grid container item xs={1} spacing={2} alignItems="center" justify="center">
           <Button disabled={props.disabled} onClick={newParam} fullWidth size="small" variant="contained" color="primary">
-            Add
+            New
           </Button>
         </Grid>
       </Grid>
