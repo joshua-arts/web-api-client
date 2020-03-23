@@ -23,12 +23,12 @@ const useStyles = makeStyles(theme => ({
 const sampleQuery = `query($number_of_repos: Int!){
   viewer {
     name
-     repositories(last: $number_of_repos) {
-       nodes {
-         name
-       }
-     }
-   }
+    repositories(last: $number_of_repos) {
+      nodes {
+        name
+      }
+    }
+  }
 }`
 
 const sampleVariables = `{
@@ -69,7 +69,7 @@ function Request(props) {
   }
 
   const buildEndpoint = () => {
-    if (requestType == 'rest') {
+    if (requestType === 'rest') {
       return endpoint + serializeUrlParams(params);
     } else {
       return endpoint;
@@ -81,12 +81,12 @@ function Request(props) {
 
     params.forEach(function (param) {
       if (param.key) {
-        if (urlParams != "?") { urlParams += "&"; }
+        if (urlParams !== "?") { urlParams += "&"; }
         urlParams += param.key + "=" + encodeURIComponent(param.value);
       }
     });
 
-    if (urlParams == "?") { urlParams = ""; }
+    if (urlParams === "?") { urlParams = ""; }
     return urlParams;
   }
 
@@ -107,7 +107,7 @@ function Request(props) {
 
     // Format the body based on requst type.
     let body = requestBody;
-    if (requestType == 'graphql') {
+    if (requestType === 'graphql') {
       body = { query: graphQuery, variables: JSON.parse(graphVariables) }
     }
 
@@ -115,7 +115,7 @@ function Request(props) {
   };
 
   const requestTypeButtonStyle = (buttonType) => {
-    if (buttonType == requestType) {
+    if (buttonType === requestType) {
       return 'contained';
     } else {
       return 'outlined';
@@ -154,7 +154,7 @@ function Request(props) {
               Action
             </InputLabel>
             <Select
-              disabled={ requestType == 'graphql' ? true : false }
+              disabled={ requestType === 'graphql' ? true : false }
               native
               value={action}
               onChange={updateAction()}
@@ -187,12 +187,12 @@ function Request(props) {
           <Headers headers={headers} setHeaders={setHeaders} />
         </Grid>
         <Grid container item alignItems="flex-end" justify="flex-end" xs={6}>
-          <Params params={params} setParams={setParams} disabled={requestType == 'graphql'} />
+          <Params params={params} setParams={setParams} disabled={requestType === 'graphql'} />
         </Grid>
-        { action == 'post' && requestType == 'rest' &&
+        { action === 'post' && requestType === 'rest' &&
           <Body requestBody={requestBody} setRequestBody={setRequestBody} />
         }
-        {requestType == 'graphql' &&
+        {requestType === 'graphql' &&
           <GraphQuery
             graphQuery={graphQuery}
             setGraphQuery={setGraphQuery}
