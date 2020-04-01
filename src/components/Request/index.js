@@ -186,7 +186,7 @@ function Request(props) {
         <Grid container item xs={6}>
           <Headers headers={headers} setHeaders={setHeaders} />
         </Grid>
-        <Grid container item alignItems="flex-end" justify="flex-end" xs={6}>
+        <Grid container item alignItems="flex-start" justify="flex-start" xs={6}>
           <Params params={params} setParams={setParams} disabled={requestType === 'graphql'} />
         </Grid>
         { action === 'post' && requestType === 'rest' &&

@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
-import { makeStyles, Button, Card, CardContent, Grid, Paper, Table, TableContainer, TableHead, TableCell, TableBody, TableRow, Typography } from '@material-ui/core';
+import { makeStyles, Button, Card, CardContent, Grid, Paper, Table, TableContainer, TableHead, TableCell, TableBody, TableRow, TextField, Typography } from '@material-ui/core';
 import classNames from 'classnames';
 import ReactJson from 'react-json-view';
 import { Label, LineChart, Line, Legend, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+
+import { CSVLink } from "react-csv";
 
 import sleepingCat from './sleeping_cat.png';
 
@@ -17,18 +19,17 @@ const useStyles = makeStyles(theme => ({
   marginFix: { marginBlockStart: 0, marginBlockEnd: 0 },
 }));
 
-const BENCHMARK_INTERVAL = 10000
 var benchmark = null;
 
 function Response(props) {
   const classes = useStyles();
   const [benchmarking, setBenchmarking] = useState(false)
   const [chartData, setChartData] = useState([]);
-  const [trial, setTrial] = useState(1)
+  const [benchmarkInterval, setBenchmarkInterval] = useState(10)
 
   const beginBenchmark = () => {
     setBenchmarking(true);
-    benchmark = setInterval(makeRequest, BENCHMARK_INTERVAL);
+    benchmark = setInterval(makeRequest, benchmarkInterval * 1000);
   }
 
   const stopBenchmark = () => {
@@ -55,14 +56,17 @@ function Response(props) {
     let responseTime = await props.benchmarkRequest();
 
     setChartData(chartData => [...chartData, {
-      trial: trial,
       responseTime: responseTime
     }]);
   };
 
+  const updateInterval = () => e => {
+    setBenchmarkInterval(e.target.value);
+  };
+
   if (props.response == null) {
     return (
-      <div class={classes.cat}>
+      <div className={classes.cat}>
         <Grid container spacing={3}>
           <Grid container item alignItems='center' justify="center" xs={12}>
             <img src={sleepingCat} width={300} />
@@ -98,6 +102,15 @@ function Response(props) {
 
     cardContent = (
       <CardContent>
+        <TextField
+          id="outlined-number"
+          label="Interval (seconds)"
+          type="number"
+          size="small"
+          defaultValue={benchmarkInterval}
+          variant="outlined"
+          onChange={updateInterval()}
+        />
         <Button onClick={beginBenchmark} fullWidth variant="outlined" color="primary" disabled={disableBenchmarking}>
           Benchmark
         </Button>
@@ -154,6 +167,10 @@ function Response(props) {
       </Grid>
     );
 
+    var csvChartData = chartData.reverse().map((row, i) => (
+      { trial: i + 1, responseTime: row.responseTime }
+    ));
+
     cardContent = (
       <CardContent>
         <Button onClick={stopBenchmark} fullWidth variant="outlined" color="primary">
@@ -176,12 +193,14 @@ function Response(props) {
         <Typography className={classes.marginFix} color="textSecondary" component="h5">
           Average response time
         </Typography>
+        <br />
+        <CSVLink data={csvChartData} filename={"data.csv"}>Download as CSV</CSVLink>
       </CardContent>
     );
   }
 
   return (
-    <div class={classes.root}>
+    <div className={classes.root}>
       <Grid container spacing={3}>
         { responseContent }
         <Grid container item xs={3}>
