@@ -157,7 +157,7 @@ function Response(props) {
             <TableBody>
               {chartData.reverse().map((row, i) => (
               <TableRow key={`table-row-${i}`}>
-                  <TableCell align="left">{i + 1}</TableCell>
+                  <TableCell align="left">{chartData.length - i}</TableCell>
                   <TableCell align="right">{row.responseTime}</TableCell>
                 </TableRow>
               ))}
@@ -168,7 +168,7 @@ function Response(props) {
     );
 
     var csvChartData = chartData.reverse().map((row, i) => (
-      { trial: i + 1, responseTime: row.responseTime }
+      { trial: chartData.length - i, responseTime: row.responseTime }
     ));
 
     cardContent = (
