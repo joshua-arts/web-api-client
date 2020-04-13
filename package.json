@@ -1,6 +1,6 @@
 {
-  "name": "honours-project",
-  "homepage": "http://joshua-arts.github.io/honours-project",
+  "name": "web-api-client",
+  "homepage": "http://joshua-arts.github.io/web-api-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
